@@ -1,0 +1,84 @@
+@page "/audit"
+
+<h2>Security Audit Dashboard</h2>
+
+<div class="row">
+    <div class="col-6">
+        <h4>Auth Events</h4>
+        @if (AuthEvents is null)
+        {
+            <p>Loading...</p>
+        }
+        else if (!AuthEvents.Any())
+        {
+            <p>No access or no events.</p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr><th>Timestamp</th><th>User</th><th>Event</th><th>Details</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var ev in AuthEvents)
+                    {
+                        <tr>
+                            <td>@ev.OccurredUtc.ToString("u")</td>
+                            <td>@ev.AuthorUser?.Email</td>
+                            <td>@ev.EventType</td>
+                            <td>@ev.Details</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+    <div class="col-6">
+        <h4>Role Changes</h4>
+        @if (RoleEvents is null)
+        {
+            <p>Loading...</p>
+        }
+        else if (!RoleEvents.Any())
+        {
+            <p>No access or no events.</p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr><th>Timestamp</th><th>Actor → Target</th><th>Details</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var ev in RoleEvents)
+                    {
+                        <tr>
+                            <td>@ev.OccurredUtc.ToString("u")</td>
+                            <td>@ev.AuthorUser?.Email → @ev.AffectedUser?.Email</td>
+                            <td>@ev.Details</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@code {
+    private List<SecurityEvent> AuthEvents;
+    private List<SecurityEvent> RoleEvents;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // GraphQL query would go here
+        var allEvents = await GraphQLService.GetSecurityEvents();
+
+        AuthEvents = allEvents
+            .Where(e => e.EventType == "LoginSuccess" || e.EventType == "Logout")
+            .ToList();
+
+        RoleEvents = allEvents
+            .Where(e => e.EventType == "RoleAssigned")
+            .ToList();
+    }
+}

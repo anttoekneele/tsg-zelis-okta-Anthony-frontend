@@ -55,3 +55,4 @@
 /Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/obj/Debug/net8.0/tsg-zelis-okta-Anthony-frontend.pdb
 /Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/obj/Debug/net8.0/tsg-zelis-okta-Anthony-frontend.genruntimeconfig.cache
 /Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/obj/Debug/net8.0/ref/tsg-zelis-okta-Anthony-frontend.dll
+/Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/bin/Debug/net8.0/Newtonsoft.Json.dll

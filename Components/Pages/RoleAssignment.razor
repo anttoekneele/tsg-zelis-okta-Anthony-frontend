@@ -1,0 +1,50 @@
+@page "/roles/assign"
+
+<h2>Assign User Role</h2>
+
+<div class="form-group">
+    <label>User</label>
+    <select @bind="SelectedUserId" class="form-control">
+        @foreach (var user in Users)
+        {
+            <option value="@user.Id">@user.Email</option>
+        }
+    </select>
+</div>
+
+<div class="form-group">
+    <label>Role</label>
+    <select @bind="SelectedRoleId" class="form-control">
+        @foreach (var role in Roles)
+        {
+            <option value="@role.Id">@role.Name</option>
+        }
+    </select>
+</div>
+
+<button class="btn btn-success" @onclick="AssignRole">Save</button>
+
+@if (!string.IsNullOrWhiteSpace(Message))
+{
+    <p class="text-success">@Message</p>
+}
+
+@code {
+    private List<User> Users = new();
+    private List<Role> Roles = new();
+    private Guid SelectedUserId;
+    private Guid SelectedRoleId;
+    private string Message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Users = await GraphQLService.GetUsers();
+        Roles = await GraphQLService.GetRoles();
+    }
+
+    private async Task AssignRole()
+    {
+        await GraphQLService.AssignUserRole(SelectedUserId, SelectedRoleId);
+        Message = "Role assigned successfully!";
+    }
+}
