@@ -1,13 +1,15 @@
 @page "/roles/assign"
+@rendermode InteractiveServer
 
 <h2>Assign User Role</h2>
 
 <div class="form-group">
     <label>User</label>
     <select @bind="SelectedUserId" class="form-control">
+        <option value="">-- Select User --</option>
         @foreach (var user in Users)
         {
-            <option value="@user.Id">@user.Email</option>
+            <option value="@user.Id.ToString()">@user.Email</option>
         }
     </select>
 </div>
@@ -15,9 +17,10 @@
 <div class="form-group">
     <label>Role</label>
     <select @bind="SelectedRoleId" class="form-control">
+        <option value="">-- Select Role --</option>
         @foreach (var role in Roles)
         {
-            <option value="@role.Id">@role.Name</option>
+            <option value="@role.Id.ToString()">@role.Name</option>
         }
     </select>
 </div>
@@ -44,7 +47,21 @@
 
     private async Task AssignRole()
     {
-        await GraphQLService.AssignUserRole(SelectedUserId, SelectedRoleId);
-        Message = "Role assigned successfully!";
+        if (SelectedUserId == Guid.Empty || SelectedRoleId == Guid.Empty)
+        {
+            Message = "❌ Please select both a user and a role.";
+            return;
+        }
+
+        var success = await GraphQLService.AssignUserRole(SelectedUserId, SelectedRoleId);
+
+        if (success)
+        {
+            Message = "✅ Role assigned successfully!";
+        }
+        else
+        {
+            Message = "⚠️ No changes made. User already has this role.";
+        }
     }
 }

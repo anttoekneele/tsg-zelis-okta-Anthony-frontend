@@ -51,20 +51,23 @@ public static class GraphQLService
         return response?["securityEvents"]?.ToObject<List<SecurityEvent>>() ?? new();
     }
 
-    public static async Task AssignUserRole(Guid userId, Guid roleId)
+    public static async Task<bool> AssignUserRole(Guid userId, Guid roleId)
     {
+        var authorId = userId; // Simulate the author as the same user for now
         var mutation = new
         {
-            query = @"mutation($userId: ID!, $roleId: ID!) {
-                assignUserRole(userId: $userId, roleId: $roleId)
-            }",
-            variables = new { userId, roleId }
+            query = @"
+                mutation($userId: UUID!, $roleId: UUID!, $authorId: UUID!) {
+                    assignRole(userId: $userId, roleId: $roleId, authorId: $authorId)
+                }",
+            variables = new { userId, roleId, authorId }
         };
 
-        await PostGraphQL(mutation);
+        var response = await PostGraphQL(mutation);
+        return response?["assignRole"]?.ToObject<bool>() ?? false;
     }
 
-    private static async Task<JObject> PostGraphQL(object payload)
+    private static async Task<JToken> PostGraphQL(object payload)
     {
         var json = JsonConvert.SerializeObject(payload);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -73,6 +76,6 @@ public static class GraphQLService
         var body = await result.Content.ReadAsStringAsync();
 
         var parsed = JObject.Parse(body);
-        return (JObject)parsed["data"];
+        return parsed["data"];
     }
 }
