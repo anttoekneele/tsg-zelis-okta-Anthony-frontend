@@ -56,3 +56,11 @@
 /Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/obj/Debug/net8.0/tsg-zelis-okta-Anthony-frontend.genruntimeconfig.cache
 /Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/obj/Debug/net8.0/ref/tsg-zelis-okta-Anthony-frontend.dll
 /Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/bin/Debug/net8.0/Newtonsoft.Json.dll
+/Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.OpenIdConnect.dll
+/Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/bin/Debug/net8.0/Microsoft.IdentityModel.Abstractions.dll
+/Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/bin/Debug/net8.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/bin/Debug/net8.0/Microsoft.IdentityModel.Logging.dll
+/Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.dll
+/Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
+/Users/yorkmacbook088/Desktop/tsg-zelis-okta-Anthony-frontend/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
