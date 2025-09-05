@@ -5,45 +5,66 @@ using tsg_zelis_okta_Anthony_frontend.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure HttpClient
+builder.Services.AddHttpClient("Api", (serviceProvider, client) =>
+{
+    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+    var baseAddress = configuration["HttpClient:BaseAddress"];
+
+    if (string.IsNullOrWhiteSpace(baseAddress))
+        throw new InvalidOperationException("Api is not configured in appsettings.json.");
+
+    client.BaseAddress = new Uri(baseAddress);
+});
+
+// Register the GraphQL Service
+builder.Services.AddScoped<GraphQLService>();
+
+// Register Http Content Accessor
+builder.Services.AddHttpContextAccessor();
+
 // Authentication
 builder.Services
-  .AddAuthentication(options =>
-  {
-      options.DefaultScheme = "Cookies";
-      options.DefaultChallengeScheme = "Okta"; // default button can be Okta
-  })
-  .AddCookie("Cookies", o => { o.SlidingExpiration = true; })
-  .AddOpenIdConnect("Okta", o =>
-  {
-      o.Authority = builder.Configuration["Okta:Authority"]; // e.g., https://dev-xxx.okta.com/oauth2/default
-      o.ClientId = builder.Configuration["Okta:ClientId"];
-      o.ClientSecret = builder.Configuration["Okta:ClientSecret"];
-      o.ResponseType = "code";
-      o.UsePkce = true;
-      o.SaveTokens = true;
-      o.Scope.Clear();
-      o.Scope.Add("openid"); o.Scope.Add("profile"); o.Scope.Add("email");
-      o.GetClaimsFromUserInfoEndpoint = true;
-      // Hook events for audit logging:
-      o.Events = new OpenIdConnectEvents {
-        OnTokenValidated = AuditLoginAsync
-      };
-  });
-//   .AddOpenIdConnect("Google", o =>
-//   {
-//       o.Authority = "https://accounts.google.com";
-//       o.ClientId = builder.Configuration["Google:ClientId"];
-//       o.ClientSecret = builder.Configuration["Google:ClientSecret"];
-//       o.ResponseType = "code";
-//       o.UsePkce = true;
-//       o.SaveTokens = true;
-//       o.Scope.Clear();
-//       o.Scope.Add("openid"); o.Scope.Add("profile"); o.Scope.Add("email");
-//       o.GetClaimsFromUserInfoEndpoint = true;
-//       o.Events = new OpenIdConnectEvents {
-//         OnTokenValidated = AuditLoginAsync
-//       };
-//   });
+    .AddAuthentication(options =>
+    {
+        options.DefaultScheme = "FederatedAuth";
+        options.DefaultChallengeScheme = "Okta";
+    })
+    .AddCookie("FederatedAuth", o =>
+    {
+        o.SlidingExpiration = true;
+    })
+    .AddOpenIdConnect("Okta", o =>
+    {
+        o.Authority = builder.Configuration["Okta:Authority"]; // e.g., https://dev-xxx.okta.com/oauth2/default
+        o.ClientId = builder.Configuration["Okta:ClientId"];
+        o.ClientSecret = builder.Configuration["Okta:ClientSecret"];
+        o.ResponseType = "code";
+        o.UsePkce = true;
+        o.SaveTokens = true;
+        o.Scope.Clear();
+        o.Scope.Add("openid"); o.Scope.Add("profile"); o.Scope.Add("email");
+        o.GetClaimsFromUserInfoEndpoint = true;
+        // Hook events for audit logging:
+        o.Events = new OpenIdConnectEvents {
+            OnTokenValidated = AuditLoginAsync
+        };
+    });
+    // .AddOpenIdConnect("Google", o =>
+    // {
+    //     o.Authority = "https://accounts.google.com";
+    //     o.ClientId = builder.Configuration["Google:ClientId"];
+    //     o.ClientSecret = builder.Configuration["Google:ClientSecret"];
+    //     o.ResponseType = "code";
+    //     o.UsePkce = true;
+    //     o.SaveTokens = true;
+    //     o.Scope.Clear();
+    //     o.Scope.Add("openid"); o.Scope.Add("profile"); o.Scope.Add("email");
+    //     o.GetClaimsFromUserInfoEndpoint = true;
+    //     o.Events = new OpenIdConnectEvents {
+    //         OnTokenValidated = AuditLoginAsync
+    //     };
+    // });
 
 async Task AuditLoginAsync(TokenValidatedContext context)
 {
@@ -95,7 +116,7 @@ app.MapGet("/signin/google", async context =>
 
 app.MapGet("/signout", async context =>
 {
-    await context.SignOutAsync("Cookies", new AuthenticationProperties
+    await context.SignOutAsync("FederatedAuth", new AuthenticationProperties
     {
         RedirectUri = "/"
     });

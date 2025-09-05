@@ -2,36 +2,42 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-public static class GraphQLService
+public class GraphQLService
 {
-    private static readonly HttpClient _http = new()
-    {
-        BaseAddress = new Uri("http://localhost:5216/graphql")
-    };
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public static async Task<List<User>> GetUsers()
+    public GraphQLService(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
+    {
+        _httpClientFactory = httpClientFactory;
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    public async Task<List<User>> GetUsers()
     {
         var query = new
         {
             query = "{ users { id email role { name } } }"
         };
 
-        var response = await PostGraphQL(query);
-        return response?["users"]?.ToObject<List<User>>() ?? new();
+        var fullResponse = await PostGraphQL(query);
+        var data = fullResponse?["data"];
+        return data?["users"]?.ToObject<List<User>>() ?? new();
     }
 
-    public static async Task<List<Role>> GetRoles()
+    public async Task<List<Role>> GetRoles()
     {
         var query = new
         {
             query = "{ roles { id name } }"
         };
 
-        var response = await PostGraphQL(query);
-        return response?["roles"]?.ToObject<List<Role>>() ?? new();
+        var fullResponse = await PostGraphQL(query);
+        var data = fullResponse?["data"];
+        return data?["roles"]?.ToObject<List<Role>>() ?? new();
     }
 
-    public static async Task<List<SecurityEvent>> GetSecurityEvents()
+    public async Task<List<SecurityEvent>> GetSecurityEvents()
     {
         var query = new
         {
@@ -47,11 +53,36 @@ public static class GraphQLService
             }"
         };
 
-        var response = await PostGraphQL(query);
-        return response?["securityEvents"]?.ToObject<List<SecurityEvent>>() ?? new();
+        var fullResponse = await PostGraphQL(query);
+
+        if (fullResponse == null)
+        {
+            Console.WriteLine("[GraphQLService] No response.");
+            return new();
+        }
+
+        if (fullResponse["errors"] is JArray errors)
+        {
+            Console.WriteLine("[GraphQLService] GraphQL Errors:");
+            foreach (var error in errors)
+            {
+                Console.WriteLine(error["message"]);
+            }
+            return new(); // Return empty to avoid crash
+        }
+
+        var data = fullResponse["data"] as JObject;
+
+        if (data == null)
+        {
+            Console.WriteLine("[GraphQLService] Data section missing.");
+            return new();
+        }
+
+        return data["securityEvents"]?.ToObject<List<SecurityEvent>>() ?? new();
     }
 
-    public static async Task<bool> AssignUserRole(Guid userId, Guid roleId)
+    public async Task<bool> AssignUserRole(Guid userId, Guid roleId)
     {
         var authorId = userId; // Simulate the author as the same user for now
         var mutation = new
@@ -63,19 +94,42 @@ public static class GraphQLService
             variables = new { userId, roleId, authorId }
         };
 
-        var response = await PostGraphQL(mutation);
-        return response?["assignRole"]?.ToObject<bool>() ?? false;
+        var fullResponse = await PostGraphQL(mutation);
+        var data = fullResponse?["data"];
+        return data?["assignRole"]?.ToObject<bool>() ?? false;
     }
 
-    private static async Task<JToken> PostGraphQL(object payload)
+    public async Task<JObject> PostGraphQL(object payload)
     {
+        var http = _httpClientFactory.CreateClient("Api");
+
         var json = JsonConvert.SerializeObject(payload);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var result = await _http.PostAsync("", content);
-        var body = await result.Content.ReadAsStringAsync();
+        var request = new HttpRequestMessage(HttpMethod.Post, "/graphql")
+        {
+            Content = content
+        };
 
-        var parsed = JObject.Parse(body);
-        return parsed["data"];
+        // Forward cookies
+        var cookie = _httpContextAccessor.HttpContext?.Request.Headers["Cookie"].ToString();
+        if (!string.IsNullOrEmpty(cookie))
+        {
+            request.Headers.Add("Cookie", cookie);
+        }
+
+        var response = await http.SendAsync(request);
+        var body = await response.Content.ReadAsStringAsync();
+
+        Console.WriteLine($"[GraphQLService] Status Code: {response.StatusCode}");
+        Console.WriteLine($"[GraphQLService] Response Body: {body}");
+
+        if (!response.IsSuccessStatusCode || string.IsNullOrEmpty(body))
+        {
+            Console.WriteLine("[GraphQLService] Request failed. Not parsing as JSON.");
+            return null;
+        }
+
+        return JObject.Parse(body); // ✅ return full response
     }
 }

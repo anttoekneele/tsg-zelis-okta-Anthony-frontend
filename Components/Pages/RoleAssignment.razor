@@ -1,5 +1,6 @@
 @page "/roles/assign"
 @rendermode InteractiveServer
+@inject GraphQLService graphQLService
 
 <h2>Assign User Role</h2>
 
@@ -41,8 +42,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Users = await GraphQLService.GetUsers();
-        Roles = await GraphQLService.GetRoles();
+        Users = await graphQLService.GetUsers();
+        Roles = await graphQLService.GetRoles();
     }
 
     private async Task AssignRole()
@@ -53,7 +54,7 @@
             return;
         }
 
-        var success = await GraphQLService.AssignUserRole(SelectedUserId, SelectedRoleId);
+        var success = await graphQLService.AssignUserRole(SelectedUserId, SelectedRoleId);
 
         if (success)
         {
