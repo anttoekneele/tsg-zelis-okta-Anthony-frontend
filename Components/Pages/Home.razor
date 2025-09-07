@@ -1,0 +1,19 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Welcome</h1>
+<br>
+
+<AuthorizeView>
+    <Authorized>
+        <a href="#">@context.User.FindFirst("preferred_username")?.Value!</a>
+    </Authorized>
+    <NotAuthorized>
+        <a href="Account/SignInOkta">Sign in with Okta</a>
+        &emsp;&emsp;
+        <a href="Account/SignInGoogle">Sign in with Google</a>
+        &emsp;&emsp;
+        <a href="Account/SignInMicrosoft">Sign in with Microsoft</a>
+    </NotAuthorized>
+</AuthorizeView>

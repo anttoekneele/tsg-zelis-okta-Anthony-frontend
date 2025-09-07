@@ -1,0 +1,9 @@
+<AuthorizeView>
+    <Authorized>
+        <a href="#">Hello, @context.User.FindFirst("name")?.Value!</a>
+        <a href="Account/SignOut">Sign out</a>
+    </Authorized>
+    <NotAuthorized>
+        <a href="/">Please sign in.</a>
+    </NotAuthorized>
+</AuthorizeView>
