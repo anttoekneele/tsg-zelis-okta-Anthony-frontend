@@ -3,7 +3,8 @@
   "documents": "**/*.graphql",
   "extensions": {
     "strawberryShake": {
-      "name": "FASAD.UI",
+      "name": "FASADClient",
+      "namespace": "FASAD.UI.GraphQL",
       "url": "https://localhost:7044/graphql",
       "records": {
         "inputs": false,

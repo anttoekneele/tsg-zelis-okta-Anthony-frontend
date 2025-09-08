@@ -5,10 +5,15 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddFASADUIClient()
+    .AddFASADClient()
     .ConfigureHttpClient(client =>
     {
-        client.BaseAddress = new Uri(builder.Configuration["GraphQL:Endpoint"]);
+        var baseAddress = builder.Configuration["GraphQL:Endpoint"];
+
+        if (baseAddress != null)
+        {
+            client.BaseAddress = new Uri(baseAddress);            
+        }
     });
 
 builder.Services
