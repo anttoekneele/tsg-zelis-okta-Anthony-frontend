@@ -1,6 +1,8 @@
 @page "/audit"
 @rendermode InteractiveServer
 @inject IAuditService auditService
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject IUserService userService
 
 <PageTitle>Security Audit Dashboard</PageTitle>
 
@@ -8,76 +10,91 @@
 <br>
 
 <div class="row">
-    <div class="col">
-    <h4>Auth Events</h4>
-    <br>
-        @if (authEvents == null)
-        {
-            <p><em>No Events.</em></p>
-        }
-        else
-        {
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>User</th>
-                        <th>Event</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var authEvent in authEvents)
-                    {
-                        <tr>
-                            <td>@authEvent.OccurredUtc</td>
-                            <td>@authEvent.AuthorUserEmail</td>
-                            <td>@authEvent.EventType</td>
-                            <td>@authEvent.Details</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-    </div>
-    &emsp;&emsp;
-    <div class="col">
-        <h4>Role Changes</h4>
+    @if(permission == "SecurityAuditor" || permission == "AuthObserver")
+    {
+        <div class="col">
+        <h4>Auth Events</h4>
         <br>
-        @if (roleChanges == null)
-        {
-            <p><em>No Events.</em></p>
-        }
-        else
-        {
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Actor -> Target</th>
-                        <th>Event</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var roleChange in roleChanges)
-                    {
+            @if (authEvents == null)
+            {
+                <p><em>No Events.</em></p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>@roleChange.OccurredUtc</td>
-                            <td>@roleChange.AuthorUserEmail -> @roleChange.AffectedUserEmail</td>
-                            <td>@roleChange.EventType</td>
-                            <td>@roleChange.Details</td>
+                            <th>Timestamp</th>
+                            <th>User</th>
+                            <th>Event</th>
+                            <th>Details</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        }
-    </div>
+                    </thead>
+                    <tbody>
+                        @foreach (var authEvent in authEvents)
+                        {
+                            <tr>
+                                <td>@authEvent.OccurredUtc</td>
+                                <td>@authEvent.AuthorUserEmail</td>
+                                <td>@authEvent.EventType</td>
+                                <td>@authEvent.Details</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    }
+    else
+    {
+        <p>Insufficient access. Contact your admin.</p>
+    }
+        &emsp;&emsp;
+    @if(permission == "SecurityAuditor")
+    {
+        <div class="col">
+            <h4>Role Changes</h4>
+            <br>
+            @if (roleChanges == null)
+            {
+                <p><em>No Events.</em></p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Actor -> Target</th>
+                            <th>Event</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var roleChange in roleChanges)
+                        {
+                            <tr>
+                                <td>@roleChange.OccurredUtc</td>
+                                <td>@roleChange.AuthorUserEmail -> @roleChange.AffectedUserEmail</td>
+                                <td>@roleChange.EventType</td>
+                                <td>@roleChange.Details</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    }
+    else
+    {
+        <p>Insufficient access. Contact your admin.</p>
+    }
 </div>
 
 @code {
     private SecurityEventDto[]? authEvents;
     private SecurityEventDto[]? roleChanges;
+    private string permission = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,5 +107,15 @@
             .Where(se => se.EventType == "RoleAssigned")
             .OrderByDescending(se => se.OccurredUtc)
             .ToArray();
+
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+
+        var userEmail = authState.User
+                .FindFirst(c => c.Type == "preferred_username")?.Value!;
+
+        var roleName = (await userService.GetUsers())
+                .FirstOrDefault(u => u.Email == userEmail)?.RoleName!;
+        
+        permission = roleName;
     }
 }
