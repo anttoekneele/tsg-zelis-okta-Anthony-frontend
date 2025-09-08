@@ -1,0 +1,3 @@
+mutation LogoutEvent($email: String!) {
+    logoutEvent(email: $email)
+}

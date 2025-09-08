@@ -56,6 +56,22 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/8.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net6.0/_._": {}
+        }
+      },
       "Microsoft.IdentityModel.Abstractions/8.2.0": {
         "type": "package",
         "compile": {
@@ -231,6 +247,42 @@
         },
         "runtime": {
           "lib/netstandard1.0/_._": {}
+        }
+      },
+      "StrawberryShake/15.1.10": {
+        "type": "package",
+        "dependencies": {
+          "StrawberryShake.Core": "15.1.10"
+        }
+      },
+      "StrawberryShake.Core/15.1.10": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
+          "StrawberryShake.Resources": "15.1.10"
+        },
+        "compile": {
+          "lib/net8.0/StrawberryShake.Core.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/StrawberryShake.Core.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "StrawberryShake.Resources/15.1.10": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/StrawberryShake.Resources.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/StrawberryShake.Resources.dll": {
+            "related": ".xml"
+          }
         }
       },
       "System.Globalization/4.3.0": {
@@ -560,6 +612,38 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/8.0.0": {
+      "sha512": "cjWrLkJXK0rs4zofsK4bSdg+jhDLTaxrkXu4gS6Y7MAlCvRyNNgwY/lJi5RDlQOnSZweHqoyvgvbdvQsRIW+hg==",
+      "type": "package",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/8.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/Microsoft.Extensions.DependencyInjection.Abstractions.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net6.0/_._",
+        "buildTransitive/netcoreapp2.0/Microsoft.Extensions.DependencyInjection.Abstractions.targets",
+        "lib/net462/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+        "lib/net462/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
+        "lib/net6.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+        "lib/net6.0/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
+        "lib/net7.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+        "lib/net7.0/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
+        "lib/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+        "lib/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
+        "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+        "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
+        "microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+        "microsoft.extensions.dependencyinjection.abstractions.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "Microsoft.IdentityModel.Abstractions/8.2.0": {
       "sha512": "27ClfnelIu92kLGOaz0vjdXR1Jv7hAdLffxxNgR8T0+IMWmxeVyO3cU8oohmuTrWUFOfd2tsSGaRNewnuClIZw==",
       "type": "package",
@@ -801,6 +885,59 @@
         "lib/netstandard1.0/_._",
         "runtime.native.system.4.3.0.nupkg.sha512",
         "runtime.native.system.nuspec"
+      ]
+    },
+    "StrawberryShake/15.1.10": {
+      "sha512": "Ep1EJ3+8F4u97UAt2fNCgt0hM+dvr+fp9RaUJ/TDa1s2bv9jBCN+fbXcloHNTh60jPsaDqirb2XFQGiJjF1w6A==",
+      "type": "package",
+      "path": "strawberryshake/15.1.10",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "greendonut-signet.png",
+        "hotchocolate-signet.png",
+        "strawberryshake-signet.png",
+        "strawberryshake.15.1.10.nupkg.sha512",
+        "strawberryshake.nuspec"
+      ]
+    },
+    "StrawberryShake.Core/15.1.10": {
+      "sha512": "YJUO5jWYwX9MtMuoHrSsJgm4oAmhkZ9GbAD2VQMGdp5Y+rdgs1w5/hIv97QNdHjq4VOm/Far70+jSnY4i11dEw==",
+      "type": "package",
+      "path": "strawberryshake.core/15.1.10",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "greendonut-signet.png",
+        "hotchocolate-signet.png",
+        "lib/net8.0/StrawberryShake.Core.dll",
+        "lib/net8.0/StrawberryShake.Core.xml",
+        "lib/net9.0/StrawberryShake.Core.dll",
+        "lib/net9.0/StrawberryShake.Core.xml",
+        "strawberryshake-signet.png",
+        "strawberryshake.core.15.1.10.nupkg.sha512",
+        "strawberryshake.core.nuspec"
+      ]
+    },
+    "StrawberryShake.Resources/15.1.10": {
+      "sha512": "6I/sz+XLnuZG9mg9zWndksotSiXEC6O9QSmAFzGUjE2Jz0VWW6cLvUIRCcFra6ry5dFu0SX8qqKRYbNvBFaYrQ==",
+      "type": "package",
+      "path": "strawberryshake.resources/15.1.10",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "greendonut-signet.png",
+        "hotchocolate-signet.png",
+        "lib/net8.0/StrawberryShake.Resources.dll",
+        "lib/net8.0/StrawberryShake.Resources.xml",
+        "lib/net9.0/StrawberryShake.Resources.dll",
+        "lib/net9.0/StrawberryShake.Resources.xml",
+        "strawberryshake-signet.png",
+        "strawberryshake.resources.15.1.10.nupkg.sha512",
+        "strawberryshake.resources.nuspec"
       ]
     },
     "System.Globalization/4.3.0": {
@@ -1828,7 +1965,8 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "Microsoft.AspNetCore.Authentication.OpenIdConnect >= 8.0.19",
-      "Okta.AspNetCore >= 4.6.6"
+      "Okta.AspNetCore >= 4.6.6",
+      "StrawberryShake >= 15.1.10"
     ]
   },
   "packageFolders": {
@@ -1881,6 +2019,10 @@
           "Okta.AspNetCore": {
             "target": "Package",
             "version": "[4.6.6, )"
+          },
+          "StrawberryShake": {
+            "target": "Package",
+            "version": "[15.1.10, )"
           }
         },
         "imports": [

@@ -4,7 +4,15 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(options =>
+builder.Services
+    .AddFASADUIClient()
+    .ConfigureHttpClient(client =>
+    {
+        client.BaseAddress = new Uri(builder.Configuration["GraphQL:Endpoint"]);
+    });
+
+builder.Services
+    .AddAuthentication(options =>
     {
         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
@@ -12,7 +20,6 @@ builder.Services.AddAuthentication(options =>
     .AddCookie()
     .AddOpenIdConnect(options =>
     {
-        // Replace the Okta placeholders in appsettings.json with your Okta configuration.
         options.Authority = builder.Configuration.GetValue<string>("Okta:Authority");
         options.ClientId = builder.Configuration.GetValue<string>("Okta:ClientId");
         options.ClientSecret = builder.Configuration.GetValue<string>("Okta:ClientSecret");
@@ -40,6 +47,9 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+// builder.Services.AddScoped<IUserService, UserService>();
+// builder.Services.AddScoped<IRoleService, RoleService>();
+// builder.Services.AddScoped<IAuditService, AuditService>();
 
 builder.Services.AddControllers();
 

@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "vWr29xl1PKo=",
+  "dgSpecHash": "t2tjVbuOW78=",
   "success": true,
   "projectFilePath": "/Users/yorkmacbook088/Desktop/FASAD.UI/FASAD.UI.csproj",
   "expectedPackageFiles": [
     "/Users/yorkmacbook088/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/8.0.19/microsoft.aspnetcore.authentication.jwtbearer.8.0.19.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/microsoft.aspnetcore.authentication.openidconnect/8.0.19/microsoft.aspnetcore.authentication.openidconnect.8.0.19.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/microsoft.bcl.timeprovider/8.0.1/microsoft.bcl.timeprovider.8.0.1.nupkg.sha512",
+    "/Users/yorkmacbook088/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/microsoft.identitymodel.abstractions/8.2.0/microsoft.identitymodel.abstractions.8.2.0.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/microsoft.identitymodel.jsonwebtokens/8.2.0/microsoft.identitymodel.jsonwebtokens.8.2.0.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/microsoft.identitymodel.logging/8.2.0/microsoft.identitymodel.logging.8.2.0.nupkg.sha512",
@@ -19,6 +20,9 @@
     "/Users/yorkmacbook088/.nuget/packages/okta.aspnet.abstractions/5.1.5/okta.aspnet.abstractions.5.1.5.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/okta.aspnetcore/4.6.6/okta.aspnetcore.4.6.6.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/runtime.native.system/4.3.0/runtime.native.system.4.3.0.nupkg.sha512",
+    "/Users/yorkmacbook088/.nuget/packages/strawberryshake/15.1.10/strawberryshake.15.1.10.nupkg.sha512",
+    "/Users/yorkmacbook088/.nuget/packages/strawberryshake.core/15.1.10/strawberryshake.core.15.1.10.nupkg.sha512",
+    "/Users/yorkmacbook088/.nuget/packages/strawberryshake.resources/15.1.10/strawberryshake.resources.15.1.10.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/system.globalization/4.3.0/system.globalization.4.3.0.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/system.identitymodel.tokens.jwt/8.2.0/system.identitymodel.tokens.jwt.8.2.0.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/system.io/4.3.0/system.io.4.3.0.nupkg.sha512",
@@ -36,9 +40,9 @@
     "/Users/yorkmacbook088/.nuget/packages/system.text.json/9.0.3/system.text.json.9.0.3.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/system.threading/4.3.0/system.threading.4.3.0.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/system.threading.tasks/4.3.0/system.threading.tasks.4.3.0.nupkg.sha512",
-    "/Users/yorkmacbook088/.nuget/packages/microsoft.netcore.app.ref/8.0.18/microsoft.netcore.app.ref.8.0.18.nupkg.sha512",
     "/Users/yorkmacbook088/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.18/microsoft.aspnetcore.app.ref.8.0.18.nupkg.sha512",
-    "/Users/yorkmacbook088/.nuget/packages/microsoft.netcore.app.host.osx-x64/8.0.18/microsoft.netcore.app.host.osx-x64.8.0.18.nupkg.sha512"
+    "/Users/yorkmacbook088/.nuget/packages/microsoft.netcore.app.host.osx-x64/8.0.18/microsoft.netcore.app.host.osx-x64.8.0.18.nupkg.sha512",
+    "/Users/yorkmacbook088/.nuget/packages/microsoft.netcore.app.ref/8.0.18/microsoft.netcore.app.ref.8.0.18.nupkg.sha512"
   ],
   "logs": []
 }

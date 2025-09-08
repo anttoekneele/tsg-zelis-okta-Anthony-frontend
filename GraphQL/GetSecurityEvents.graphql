@@ -1,0 +1,10 @@
+query GetSecurityEvents {
+    securityEvents {
+        id
+        eventType
+        occurredUtc
+        details
+        authorUserEmail
+        affectedUserEmail
+    }
+}

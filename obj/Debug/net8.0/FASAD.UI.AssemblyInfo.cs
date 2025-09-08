@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FASAD.UI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4427e8935f87e269947e5a47fe97a1fec9615df4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5832f4831bfb45854d9fd2ae872d62efd1900e1a")]
 [assembly: System.Reflection.AssemblyProductAttribute("FASAD.UI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FASAD.UI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

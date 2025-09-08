@@ -1,0 +1,3 @@
+mutation RoleAssignedEvent($authorUserEmail: String!, $affectedUserEmail: String!, $fromRoleName: String!, $toRoleName: String!) {
+    roleAssignedEvent(authorUserEmail: $authorUserEmail, affectedUserEmail: $affectedUserEmail, fromRoleName: $fromRoleName, toRoleName: $toRoleName)
+}

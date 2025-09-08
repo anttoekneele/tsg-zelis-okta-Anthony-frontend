@@ -1,0 +1,3 @@
+mutation CreateUser($externalId: String!, $email: String!) {
+    createUser(externalId: $externalId, email: $email)
+}

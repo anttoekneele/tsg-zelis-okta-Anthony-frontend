@@ -1,0 +1,46 @@
+schema {
+  query: Queries
+  mutation: Mutations
+}
+
+type Mutations {
+  createUser(externalId: String! email: String!): Boolean!
+  assignUserRole(email: String! roleName: String!): Boolean!
+  loginSuccessEvent(email: String! provider: String!): Boolean!
+  logoutEvent(email: String!): Boolean!
+  roleAssignedEvent(authorUserEmail: String! affectedUserEmail: String! fromRoleName: String! toRoleName: String!): Boolean!
+}
+
+type Queries {
+  users: [UserDto!]!
+  roles: [RoleDto!]!
+  securityEvents: [SecurityEventDto!]!
+}
+
+type SecurityEventDto {
+  id: UUID!
+  eventType: String!
+  occurredUtc: DateTime!
+  details: String!
+  authorUserEmail: String!
+  affectedUserEmail: String!
+}
+
+type RoleDto {
+  id: UUID!
+  name: String!
+}
+
+type UserDto {
+  id: UUID!
+  email: String!
+  roleName: String!
+}
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+scalar UUID
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
