@@ -3,15 +3,21 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 public class AuthService : IAuthService
 {
-    public async Task AuthLogin(TokenValidatedContext context)
+    private readonly IUserService _userService;
+    private readonly IAuditService _auditService;
+    private string testEmail = ""; // NEED TO REMOVE!
+
+    public AuthService(IUserService userService, IAuditService auditService)
+    {
+        _userService = userService;
+        _auditService = auditService;
+    }
+
+    public async Task OktaAuthLogin(TokenValidatedContext context)
     {
         var accessToken = context.TokenEndpointResponse?.AccessToken;
         var idToken = context.TokenEndpointResponse?.IdToken;
         var refreshToken = context.TokenEndpointResponse?.RefreshToken;
-
-        Console.WriteLine($"Access Token: {accessToken}");
-        Console.WriteLine($"ID Token: {idToken}");
-        Console.WriteLine($"Refresh Token: {refreshToken}");
 
         if (!string.IsNullOrEmpty(accessToken))
         {
@@ -30,17 +36,35 @@ public class AuthService : IAuthService
             var claimsIdentity = (ClaimsIdentity)context.Principal?.Identity!;
             claimsIdentity?.AddClaim(new Claim("refresh_token", refreshToken));
         }
+        
+        var identity = (ClaimsIdentity)context.Principal!.Identity!;
 
-        /*
-        Call user service to get role and navigate to roleclaims to get permissions.
-        Add permissions as new claims here.
-        */
+        var externalId = identity.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        var email = identity.FindFirst("preferred_username")?.Value! + testEmail;
 
-        await Task.CompletedTask;
+        var user = (await _userService.GetUsers())
+            .FirstOrDefault(u => u.Email == email);
+
+        if (user == null)
+        {
+            await _userService.CreateUser(externalId, email);
+        }
+
+        await _auditService.LoginSuccessEvent(email, "Okta");
+
+
+
+        // NEED TO REMOVE
+        Console.WriteLine($"Access Token: {accessToken}");
+        Console.WriteLine($"ID Token: {idToken}");
+        Console.WriteLine($"Refresh Token: {refreshToken}");
     }
 
-    public Task AuthLogout()
+    public async Task AuthLogout(RedirectContext context)
     {
-        throw new NotImplementedException();
+        var identity = context.HttpContext.User;
+        var email = identity.FindFirst("preferred_username")?.Value! + testEmail;
+
+        await _auditService.LogoutEvent(email);
     }
 }

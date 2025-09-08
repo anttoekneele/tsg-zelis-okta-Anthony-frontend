@@ -1,63 +1,87 @@
 @page "/roles/assign"
-@attribute [StreamRendering]
+@rendermode InteractiveServer
+@inject IUserService userService
+@inject IRoleService roleService
+@inject IAuditService auditService
+@inject AuthenticationStateProvider authenticationStateProvider
 
 <PageTitle>Assign User Role</PageTitle>
 
 <h1>Assign User Role</h1>
 <br>
 
-@if (forecasts == null)
+@if (users != null)
 {
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
+    <div class="form-group">
+        <h5>User</h5>
+        <select @bind="affectedUserEmail" class="form-control">
+            <option value="">-- Select User --</option>
+            @foreach (var user in users)
             {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
+                <option value="@user.Email">@user.Email</option>
             }
-        </tbody>
-    </table>
+        </select>
+    </div>
+}
+<br>
+@if (roles != null)
+{
+    <div class="form-group">
+        <h5>Role</h5>
+        <select @bind="toRoleName" class="form-control">
+            <option value="">-- Select Role --</option>
+            @foreach (var role in roles)
+            {
+                <option value="@role.Name">@role.Name</option>
+            }
+        </select>
+    </div>
+}
+<br>
+<button class="btn btn-success" @onclick="AssignUserRole">Save</button>
+<br>
+<br>
+@if (message != "")
+{
+    <p>@message</p>
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private UserDto[]? users;
+    private RoleDto[]? roles;
+    private string affectedUserEmail = "";
+    private string toRoleName = "";
+    private string message = "";
 
     protected override async Task OnInitializedAsync()
     {
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        await Task.Delay(500);
+        users = (await userService.GetUsers())
+            .ToArray();
 
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
+        roles = (await roleService.GetRoles())
+            .ToArray();
     }
 
-    private class WeatherForecast
+    public async Task AssignUserRole()
     {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        if (affectedUserEmail == "" || toRoleName == "")
+        {
+            message = "Please select both a user and a role.";
+        }
+        else
+        {
+            var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+
+            var authorUserEmail = authState.User
+                .FindFirst(c => c.Type == "preferred_username")?.Value!;
+
+            var fromRoleName = (await userService.GetUsers())
+                .FirstOrDefault(u => u.Email == affectedUserEmail)?.RoleName!;
+
+            await userService.AssignUserRole(affectedUserEmail, toRoleName);
+            await auditService.RoleAssignedEvent(authorUserEmail, affectedUserEmail, fromRoleName, toRoleName);
+            message = "Role assigned successfully!";
+        }
+        Console.WriteLine();
     }
 }

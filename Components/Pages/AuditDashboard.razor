@@ -1,5 +1,6 @@
 @page "/audit"
-@attribute [StreamRendering]
+@rendermode InteractiveServer
+@inject IAuditService auditService
 
 <PageTitle>Security Audit Dashboard</PageTitle>
 
@@ -10,29 +11,29 @@
     <div class="col">
     <h4>Auth Events</h4>
     <br>
-        @if (forecasts == null)
+        @if (authEvents == null)
         {
-            <p><em>Loading...</em></p>
+            <p><em>No Events.</em></p>
         }
         else
         {
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Temp. (C)</th>
-                        <th>Temp. (F)</th>
-                        <th>Summary</th>
+                        <th>Timestamp</th>
+                        <th>User</th>
+                        <th>Event</th>
+                        <th>Details</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var forecast in forecasts)
+                    @foreach (var authEvent in authEvents)
                     {
                         <tr>
-                            <td>@forecast.Date.ToShortDateString()</td>
-                            <td>@forecast.TemperatureC</td>
-                            <td>@forecast.TemperatureF</td>
-                            <td>@forecast.Summary</td>
+                            <td>@authEvent.OccurredUtc</td>
+                            <td>@authEvent.AuthorUserEmail</td>
+                            <td>@authEvent.EventType</td>
+                            <td>@authEvent.Details</td>
                         </tr>
                     }
                 </tbody>
@@ -43,29 +44,29 @@
     <div class="col">
         <h4>Role Changes</h4>
         <br>
-        @if (forecasts == null)
+        @if (roleChanges == null)
         {
-            <p><em>Loading...</em></p>
+            <p><em>No Events.</em></p>
         }
         else
         {
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Temp. (C)</th>
-                        <th>Temp. (F)</th>
-                        <th>Summary</th>
+                        <th>Timestamp</th>
+                        <th>Actor -> Target</th>
+                        <th>Event</th>
+                        <th>Details</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var forecast in forecasts)
+                    @foreach (var roleChange in roleChanges)
                     {
                         <tr>
-                            <td>@forecast.Date.ToShortDateString()</td>
-                            <td>@forecast.TemperatureC</td>
-                            <td>@forecast.TemperatureF</td>
-                            <td>@forecast.Summary</td>
+                            <td>@roleChange.OccurredUtc</td>
+                            <td>@roleChange.AuthorUserEmail -> @roleChange.AffectedUserEmail</td>
+                            <td>@roleChange.EventType</td>
+                            <td>@roleChange.Details</td>
                         </tr>
                     }
                 </tbody>
@@ -75,28 +76,19 @@
 </div>
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private SecurityEventDto[]? authEvents;
+    private SecurityEventDto[]? roleChanges;
 
     protected override async Task OnInitializedAsync()
     {
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        await Task.Delay(500);
+        authEvents = (await auditService.GetSecurityEvents())
+            .Where(se => se.EventType == "LoginSuccess" || se.EventType == "Logout")
+            .OrderByDescending(se => se.OccurredUtc)
+            .ToArray();
 
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
-    }
-
-    private class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        roleChanges = (await auditService.GetSecurityEvents())
+            .Where(se => se.EventType == "RoleAssigned")
+            .OrderByDescending(se => se.OccurredUtc)
+            .ToArray();
     }
 }

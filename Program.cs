@@ -40,21 +40,21 @@ builder.Services
             {
                 var authService = context.HttpContext.RequestServices.GetRequiredService<IAuthService>();
 
-                await authService.AuthLogin(context);
+                await authService.OktaAuthLogin(context);
             },
             OnRedirectToIdentityProviderForSignOut = async context =>
             {
                 var authService = context.HttpContext.RequestServices.GetRequiredService<IAuthService>();
 
-                // await authService.AuthLogout();
+                await authService.AuthLogout(context);
             }
         };
     });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-// builder.Services.AddScoped<IUserService, UserService>();
-// builder.Services.AddScoped<IRoleService, RoleService>();
-// builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
 
 builder.Services.AddControllers();
 

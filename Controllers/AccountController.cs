@@ -8,7 +8,7 @@ namespace okta_blazor_server_side_example.Controllers
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
-        public IActionResult SignInOkta([FromQuery] string returnUrl)
+        public IActionResult OktaSignIn([FromQuery] string returnUrl)
         {
             if (User?.Identity?.IsAuthenticated == true)
             {
@@ -18,7 +18,7 @@ namespace okta_blazor_server_side_example.Controllers
             return Challenge(OktaDefaults.MvcAuthenticationScheme);
         }
 
-        public IActionResult SignInGoogle([FromQuery] string returnUrl)
+        public IActionResult GoogleSignIn([FromQuery] string returnUrl)
         {
             if (User?.Identity?.IsAuthenticated == true)
             {
@@ -28,7 +28,7 @@ namespace okta_blazor_server_side_example.Controllers
             return Challenge(OktaDefaults.MvcAuthenticationScheme);
         }
 
-        public IActionResult SignInMicrosoft([FromQuery] string returnUrl)
+        public IActionResult MicrosoftSignIn([FromQuery] string returnUrl)
         {
             if (User?.Identity?.IsAuthenticated == true)
             {
